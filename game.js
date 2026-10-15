@@ -157,6 +157,7 @@
         }
 
         startGame() {
+            window.soundSystem.init();
             window.soundSystem.playClick();
             this.resetGame();
             this.state = 'PLAYING';
@@ -585,7 +586,11 @@
             // Audio & FX
             window.soundSystem.playEat();
             if (this.combo > 1) {
-                window.soundSystem.playCombo(this.combo);
+                setTimeout(() => {
+                    if (this.state === 'PLAYING') {
+                        window.soundSystem.playCombo(this.combo);
+                    }
+                }, 90);
             }
 
             this.createExplosion(
