@@ -384,22 +384,26 @@ body::before {
     display: block;
     background: #090a14;
     cursor: default;
+    touch-action: none;
 }
 
 /* Overlay UI Screens */
 .game-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(9, 10, 19, 0.82);
+    background: rgba(9, 10, 19, 0.88);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 12px;
     text-align: center;
     z-index: 10;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     transition: opacity 0.25s ease, visibility 0.25s;
 }
 
@@ -413,15 +417,22 @@ body::before {
     background: var(--bg-surface);
     border: 1px solid var(--border-glow);
     border-radius: var(--radius-lg);
-    padding: 28px 36px;
+    padding: 20px 24px;
     max-width: 440px;
-    width: 90%;
+    width: 92%;
+    margin: auto;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: 12px;
     animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.overlay-logo {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
 }
 
 @keyframes modalPop {
@@ -431,7 +442,7 @@ body::before {
 
 .overlay-title {
     font-family: var(--font-heading);
-    font-size: 2rem;
+    font-size: 1.7rem;
     font-weight: 900;
     letter-spacing: 2px;
     background: linear-gradient(135deg, #fff, var(--primary));
@@ -687,6 +698,13 @@ body::before {
 @media (max-width: 768px) {
     .hud-bar {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .hud-card {
+        padding: 8px 10px;
+    }
+    .hud-value {
+        font-size: 1.3rem;
     }
     .mobile-controls {
         display: flex;
@@ -701,12 +719,110 @@ body::before {
 
 @media (max-width: 480px) {
     body {
-        padding: 8px;
+        padding: 6px 8px;
+    }
+    .game-app {
+        gap: 8px;
+    }
+    .game-header {
+        padding: 8px 12px;
+    }
+    .logo-area {
+        gap: 6px;
+    }
+    .logo-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 15px;
+    }
+    .logo-text {
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+    }
+    .logo-badge {
+        display: none;
+    }
+    .header-actions {
+        gap: 6px;
+    }
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    .theme-select {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    .hud-bar {
+        gap: 6px;
+    }
+    .hud-card {
+        padding: 6px 8px;
+        border-radius: var(--radius-sm);
+    }
+    .hud-label {
+        font-size: 0.65rem;
+    }
+    .hud-value {
+        font-size: 1.15rem;
     }
     .overlay-modal {
-        padding: 20px 20px;
+        padding: 12px 14px;
+        gap: 8px;
+        width: 96%;
+    }
+    .overlay-logo {
+        width: 32px;
+        height: 32px;
+        font-size: 17px;
     }
     .overlay-title {
-        font-size: 1.6rem;
+        font-size: 1.25rem;
+        letter-spacing: 1px;
+    }
+    .overlay-subtitle {
+        font-size: 0.76rem;
+        line-height: 1.25;
+    }
+    .settings-group {
+        gap: 3px;
+    }
+    .settings-label {
+        font-size: 0.65rem;
+    }
+    .pill-selectors {
+        padding: 2px;
+        gap: 3px;
+    }
+    .pill-btn {
+        padding: 6px 4px;
+        font-size: 0.72rem;
+    }
+    .btn-primary {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 4px;
+    }
+    .stats-grid {
+        gap: 6px;
+    }
+    .stat-box {
+        padding: 6px 8px;
+    }
+    .stat-box-val {
+        font-size: 1.05rem;
+    }
+    .dpad-btn {
+        width: 54px;
+        height: 54px;
+        font-size: 1.3rem;
+    }
+    .food-guide {
+        font-size: 0.68rem;
+        gap: 8px;
+        padding: 6px 10px;
     }
 }
