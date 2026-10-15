@@ -12,9 +12,9 @@
     const TILE_SIZE = BASE_CANVAS_SIZE / GRID_SIZE; // 25px per tile
 
     const SPEEDS = {
-        chill: 130,   // ms per tick
-        normal: 95,
-        hyper: 65
+        chill: 180,   // ms per tick (relaxed, easy to steer)
+        normal: 140,  // ms per tick (classic, comfortable speed)
+        hyper: 100    // ms per tick (fast arcade mode)
     };
 
     const FOOD_TYPES = {
@@ -487,14 +487,14 @@
 
         // ================= GAME LOGIC STEP =================
         getCurrentTickInterval() {
-            let interval = SPEEDS[this.difficulty] || 95;
+            let interval = SPEEDS[this.difficulty] || 140;
             // Freeze slows down speed by 40%
             if (this.activeEffects.freeze > 0) {
                 interval *= 1.45;
             }
-            // Length scaling: slightly speed up as snake grows
-            const lengthSpeedup = Math.min(this.snake.length * 0.4, 25);
-            return Math.max(35, interval - lengthSpeedup);
+            // Length scaling: very gentle speedup as snake grows
+            const lengthSpeedup = Math.min(this.snake.length * 0.2, 15);
+            return Math.max(85, interval - lengthSpeedup);
         }
 
         tick() {
@@ -683,7 +683,7 @@
         // ================= MAIN RENDER & GAME LOOP =================
         gameLoop(timestamp) {
             if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-            const dt = timestamp - this.lastFrameTime;
+            const dt = Math.min(timestamp - this.lastFrameTime, 120);
             this.lastFrameTime = timestamp;
 
             // Handle Timing & Subsystems
@@ -691,9 +691,9 @@
                 this.tickAccumulator += dt;
                 const tickInterval = this.getCurrentTickInterval();
 
-                while (this.tickAccumulator >= tickInterval) {
+                if (this.tickAccumulator >= tickInterval) {
                     this.tick();
-                    this.tickAccumulator -= tickInterval;
+                    this.tickAccumulator = Math.min(this.tickAccumulator - tickInterval, tickInterval * 0.5);
                 }
 
                 // Combo Timer Countdown
