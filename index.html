@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Cyber Snake 2D - A high-octane modern arcade snake game with neon visuals, combos, special power-ups, and synthesized audio.">
+    <meta name="keywords" content="snake game, 2d snake, arcade game, retro, neon, html5 canvas game">
+    <title>CYBER SNAKE 2D // Ultra Arcade</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
+</head>
+<body data-theme="cyber">
+
+    <main class="game-app">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="logo-area">
+                <div class="logo-icon">🐍</div>
+                <div>
+                    <h1 class="logo-text">CYBER SNAKE</h1>
+                </div>
+                <span class="logo-badge">2D NEO</span>
+            </div>
+
+            <div class="header-actions">
+                <select id="themeSelect" class="theme-select" aria-label="Select Game Theme">
+                    <option value="cyber">⚡ Cyber Neon</option>
+                    <option value="matrix">💻 Emerald Matrix</option>
+                    <option value="synthwave">🌆 Synthwave 80s</option>
+                    <option value="inferno">🔥 Crimson Inferno</option>
+                </select>
+
+                <button id="soundToggle" class="btn-icon" title="Toggle Sound (M)" aria-label="Toggle Sound">
+                    <span id="soundIcon">🔊</span>
+                </button>
+
+                <button id="helpBtn" class="btn-icon" title="How to Play" aria-label="Game Help">
+                    <span>❔</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- HUD Scoreboard -->
+        <section class="hud-bar" aria-label="Scoreboard HUD">
+            <div class="hud-card score">
+                <span class="hud-label">Score</span>
+                <span id="currentScore" class="hud-value">0</span>
+            </div>
+
+            <div class="hud-card highscore">
+                <span class="hud-label">🏆 High Score</span>
+                <span id="highScore" class="hud-value">0</span>
+            </div>
+
+            <div class="hud-card combo">
+                <span class="hud-label">Combo <span id="comboMultiplier">x1.0</span></span>
+                <span id="comboStreak" class="hud-value">0</span>
+                <div class="combo-gauge">
+                    <div id="comboGaugeFill" class="combo-gauge-fill"></div>
+                </div>
+            </div>
+
+            <div class="hud-card speed">
+                <span class="hud-label">Speed Level</span>
+                <span id="speedLevel" class="hud-value">1</span>
+            </div>
+        </section>
+
+        <!-- Viewport & Canvas Area -->
+        <div id="viewport" class="game-viewport">
+            <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+            <!-- START SCREEN OVERLAY -->
+            <div id="startOverlay" class="game-overlay">
+                <div class="overlay-modal">
+                    <div class="logo-icon" style="width: 52px; height: 52px; font-size: 26px;">🐍</div>
+                    <h2 class="overlay-title">CYBER SNAKE</h2>
+                    <p class="overlay-subtitle">Eat glowing apples, trigger combo multipliers, grab power-ups, and claim the leaderboard!</p>
+                    
+                    <div class="settings-group">
+                        <span class="settings-label">Game Mode</span>
+                        <div class="pill-selectors" id="modeSelector">
+                            <button class="pill-btn active" data-mode="classic">Classic</button>
+                            <button class="pill-btn" data-mode="portal">Portal Wrap</button>
+                            <button class="pill-btn" data-mode="obstacles">Obstacles</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <span class="settings-label">Speed / Difficulty</span>
+                        <div class="pill-selectors" id="diffSelector">
+                            <button class="pill-btn" data-diff="chill">Chill</button>
+                            <button class="pill-btn active" data-diff="normal">Normal</button>
+                            <button class="pill-btn" data-diff="hyper">Hyper</button>
+                        </div>
+                    </div>
+
+                    <button id="startBtn" class="btn-primary">
+                        <span>START GAME</span>
+                        <span>⚡</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PAUSE OVERLAY -->
+            <div id="pauseOverlay" class="game-overlay hidden">
+                <div class="overlay-modal">
+                    <h2 class="overlay-title">PAUSED</h2>
+                    <p class="overlay-subtitle">Take a breather, agent. Ready to jump back in?</p>
+                    <button id="resumeBtn" class="btn-primary">RESUME</button>
+                    <button id="restartFromPauseBtn" class="btn-secondary">RESTART</button>
+                </div>
+            </div>
+
+            <!-- GAME OVER OVERLAY -->
+            <div id="gameOverOverlay" class="game-overlay hidden">
+                <div class="overlay-modal">
+                    <h2 class="overlay-title" style="color: var(--food-color);">SYSTEM CRASH</h2>
+                    <div id="newRecordBadge" class="new-record-tag hidden">★ NEW HIGH SCORE! ★</div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-box-label">Final Score</span>
+                            <span id="finalScore" class="stat-box-val">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">Apples Eaten</span>
+                            <span id="statApples" class="stat-box-val">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">Max Combo</span>
+                            <span id="statMaxCombo" class="stat-box-val">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">Time Alive</span>
+                            <span id="statTime" class="stat-box-val">0s</span>
+                        </div>
+                    </div>
+
+                    <button id="playAgainBtn" class="btn-primary">
+                        <span>PLAY AGAIN</span>
+                        <span>🔄</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend & Powerup Guide -->
+        <footer class="food-guide" aria-label="Food and Powerups">
+            <div class="guide-item">
+                <span class="dot-indicator dot-apple"></span>
+                <span>Normal Apple (+10 pts)</span>
+            </div>
+            <div class="guide-item">
+                <span class="dot-indicator dot-gold"></span>
+                <span>Golden Apple (+50 pts)</span>
+            </div>
+            <div class="guide-item">
+                <span class="dot-indicator dot-freeze"></span>
+                <span>Frost Berry (Slow-Mo)</span>
+            </div>
+            <div class="guide-item">
+                <span class="dot-indicator dot-multiplier"></span>
+                <span>Double Star (2x Score)</span>
+            </div>
+        </footer>
+
+        <!-- Keyboard Shortcut Hints -->
+        <div class="keyboard-hints">
+            <span><kbd class="key-badge">W A S D</kbd> / <kbd class="key-badge">Arrows</kbd> Move</span>
+            <span><kbd class="key-badge">Space</kbd> / <kbd class="key-badge">P</kbd> Pause</span>
+            <span><kbd class="key-badge">R</kbd> Restart</span>
+            <span><kbd class="key-badge">M</kbd> Mute</span>
+        </div>
+
+        <!-- Virtual Mobile D-Pad Controls -->
+        <section class="mobile-controls" id="mobileControls" aria-label="On-screen Controls">
+            <div class="dpad-row">
+                <button class="dpad-btn" id="dpadUp" aria-label="Up">▲</button>
+            </div>
+            <div class="dpad-row">
+                <button class="dpad-btn" id="dpadLeft" aria-label="Left">◀</button>
+                <button class="dpad-btn" id="dpadDown" aria-label="Down">▼</button>
+                <button class="dpad-btn" id="dpadRight" aria-label="Right">▶</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Help Modal Dialog -->
+    <dialog id="helpModal" style="border: none; background: transparent; padding: 0;">
+        <div class="overlay-modal" style="margin: auto; max-width: 480px;">
+            <h3 class="overlay-title" style="font-size: 1.5rem;">HOW TO PLAY</h3>
+            <ul style="text-align: left; line-height: 1.6; font-size: 0.9rem; color: var(--text-muted); padding-left: 18px;">
+                <li>Control the cyber snake using <strong style="color: var(--primary);">Arrow Keys</strong> or <strong style="color: var(--primary);">WASD</strong> (or touch swipe on phone).</li>
+                <li>Eat items quickly to build your <strong style="color: var(--secondary);">Combo Multiplier</strong> before the combo bar drains!</li>
+                <li><strong style="color: #ffd700;">Golden Apples</strong> grant 50 points and trigger a sparkle burst.</li>
+                <li><strong style="color: #00d2ff;">Frost Berries</strong> slow time down for tricky maneuvers.</li>
+                <li><strong style="color: #b5179e;">Double Stars</strong> double all points earned for 10 seconds.</li>
+                <li>In <strong>Classic</strong> mode, avoid crashing into walls and yourself. In <strong>Portal</strong> mode, snake wraps through opposite walls!</li>
+            </ul>
+            <button id="closeHelpBtn" class="btn-primary" style="margin-top: 10px;">GOT IT!</button>
+        </div>
+    </dialog>
+
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
