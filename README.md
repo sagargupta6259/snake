@@ -1,8 +1,8 @@
-# 🐍 Cyber Snake 2D
+# 🐍 Rahul Snake Game
 
 A modern, high-octane 2D arcade Snake game built with HTML5 Canvas, modern Vanilla CSS, and synthesized Web Audio API.
 
-![Cyber Snake 2D](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
+![Rahul Snake Game](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 ![Tech](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20JavaScript-blue?style=for-the-badge)
 
 ---
