@@ -12,9 +12,9 @@
     const TILE_SIZE = BASE_CANVAS_SIZE / GRID_SIZE; // 25px per tile
 
     const SPEEDS = {
-        chill: 180,   // ms per tick (relaxed, easy to steer)
-        normal: 140,  // ms per tick (classic, comfortable speed)
-        hyper: 100    // ms per tick (fast arcade mode)
+        chill: 260,   // ms per tick (extra slow, very calm)
+        normal: 200,  // ms per tick (classic slow & steady)
+        hyper: 150    // ms per tick (moderate pacing)
     };
 
     const FOOD_TYPES = {
@@ -487,14 +487,12 @@
 
         // ================= GAME LOGIC STEP =================
         getCurrentTickInterval() {
-            let interval = SPEEDS[this.difficulty] || 140;
+            let interval = SPEEDS[this.difficulty] || 200;
             // Freeze slows down speed by 40%
             if (this.activeEffects.freeze > 0) {
                 interval *= 1.45;
             }
-            // Length scaling: very gentle speedup as snake grows
-            const lengthSpeedup = Math.min(this.snake.length * 0.2, 15);
-            return Math.max(85, interval - lengthSpeedup);
+            return interval;
         }
 
         tick() {
